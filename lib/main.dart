@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'json_parsing.dart';
 import 'src/articles.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -26,57 +28,77 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Article> _articles = articles;
+  List<int> _ids = [
+    20052623,
+    20061764,
+    20054831,
+    20066288,
+    20064169,
+    20061078,
+    20077421,
+    20067712,
+    20074653,
+  ];
+
+  Future<Article> _getArticle(int id) async{
+    final storyUrl = 'https://hacker-news.firebaseio.com/v0/item/$id.json';
+    final storyRes = await http.get(storyUrl);
+    if(storyRes.statusCode == 200) {
+      return parseArticle(storyRes.body);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async{
-          await new Future.delayed(const Duration(seconds: 1));
-          setState(() {
-            _articles.removeAt(0);
-          });
-          return;
-        },
-        child: ListView(
-                children: _articles.map(_buildItem).toList()
-              ),
+      body: ListView(
+          children: _ids.map((id) =>
+              FutureBuilder<Article>(
+                future: _getArticle(id),
+                builder: (BuildContext context, AsyncSnapshot<Article> snapshot){
+                  if(snapshot.connectionState == ConnectionState.done){
+                    return _buildItem(snapshot.data);
+                  }else{
+                    return Center(
+                      child:
+                      CircularProgressIndicator(),
+                    );
+                  }
+                },
+
+              )
+          ).toList()
       ),
     );
   }
 
   Widget _buildItem(Article article) {
-
     return Padding(
-      key: Key(article.text),
+      key: Key(article.title),
       padding: const EdgeInsets.all(8.0),
       child: ExpansionTile(
         title: Text(
-          article.text,
+          article.title ?? '[null]',
           style: TextStyle(fontSize: 20.0),
           textAlign: TextAlign.justify,
         ),
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 18.0,right: 58.0),
+            padding: const EdgeInsets.only(left: 18.0, right: 58.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  '${article.commentsCount} comments',
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.blue
-                  ),
+                  '${article.descendants} comments',
+                  style: TextStyle(fontSize: 15.0, color: Colors.blue),
                 ),
                 MaterialButton(
-                  onPressed: () async{
-                    final fakeUrl = 'http://${article.domain}';
-                    if(await canLaunch(fakeUrl)){
-                      await launch(fakeUrl);
+                  onPressed: () async {
+                    if (await canLaunch(article.url)) {
+                      await launch(article.url);
                     }
                   },
                   child: Text(
