@@ -1,4 +1,4 @@
-import 'package:boring_show/json_parsing.dart';
+import 'package:boring_show/src/json_parsing.dart';
 import 'package:test_api/test_api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

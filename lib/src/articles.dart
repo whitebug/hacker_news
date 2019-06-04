@@ -2,7 +2,7 @@ import 'dart:convert' as json;
 import 'package:built_value/built_value.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
-import 'package:boring_show/serializers.dart';
+import 'package:boring_show/src/serializers.dart';
 
 part 'articles.g.dart';
 

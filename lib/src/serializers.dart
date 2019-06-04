@@ -6,7 +6,7 @@ import 'package:built_value/json_object.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
 
-part 'serializers.g.dart';
+part 'package:boring_show/src/serializers.g.dart';
 
 /// Example of how to use built_value serialization.
 ///

@@ -1,6 +1,6 @@
 import 'dart:convert' as json;
 import 'package:boring_show/src/articles.dart';
-import 'serializers.dart';
+import 'package:boring_show/src/serializers.dart';
 
 List<int> parseTopStories(String jsonString){
   final parsed = json.jsonDecode(jsonString);
