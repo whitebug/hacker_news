@@ -21,7 +21,7 @@ class HackerNewsBloc{
     20067712,
     20074653,
   ];
-  
+
 
   HackerNewsBloc(){
     _updateArticles().then((_){
