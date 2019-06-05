@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page',bloc: bloc,),
+      home: MyHomePage(title: 'Flutter Hacker News',bloc: bloc,),
     );
   }
 }
@@ -40,6 +40,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +53,26 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context,snapshot) => ListView(
           children: snapshot.data.map(_buildItem).toList(),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+          items: [
+            BottomNavigationBarItem(
+              title: Text('Top Stories'),
+              icon: Icon(Icons.airplay),
+            ),
+            BottomNavigationBarItem(
+              title: Text('New Stories'),
+              icon: Icon(Icons.new_releases),
+            )
+          ],
+        onTap: (index){
+          if(index == 0){
+            widget.bloc.storiesType.add(StoriesType.topStories);
+          }else{
+            widget.bloc.storiesType.add(StoriesType.newStories);
+          }
+        },
       ),
     );
   }
