@@ -1,9 +1,9 @@
 import 'dart:collection';
-
 import 'package:boring_show/src/hn_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:boring_show/src/articles.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main(){
   final hnBloc = HackerNewsBloc();
@@ -46,6 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        leading: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: LoadingInfo(widget.bloc.isLoading),
+        ),
       ),
       body: StreamBuilder<UnmodifiableListView<Article>>(
         stream: widget.bloc.articles,
@@ -72,6 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
           }else{
             widget.bloc.storiesType.add(StoriesType.newStories);
           }
+          setState(() {
+            _currentIndex = index;
+          });
         },
       ),
     );
@@ -119,3 +126,23 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+class LoadingInfo extends StatelessWidget {
+  final Stream<bool> _isLoading;
+  LoadingInfo(this._isLoading);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: _isLoading,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
+        /*if (snapshot.hasData && snapshot.data){*/
+          return Icon(FontAwesomeIcons.hackerNewsSquare);
+        /*}else{
+          return Container();
+        }*/
+      },
+    );
+  }
+}
+
