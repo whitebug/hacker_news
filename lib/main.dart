@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepOrange,
       ),
       home: MyHomePage(title: 'Flutter Hacker News',bloc: bloc,),
     );
@@ -127,17 +127,39 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class LoadingInfo extends StatelessWidget {
+class LoadingInfo extends StatefulWidget {
   final Stream<bool> _isLoading;
   LoadingInfo(this._isLoading);
+  @override
+  _LoadingInfoState createState() => _LoadingInfoState();
+}
+
+class _LoadingInfoState extends State<LoadingInfo> with TickerProviderStateMixin{
+
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _isLoading,
+      stream: widget._isLoading,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
         /*if (snapshot.hasData && snapshot.data){*/
-          return Icon(FontAwesomeIcons.hackerNewsSquare);
+          _controller.forward().then((f) => _controller.reverse());
+          return FadeTransition(
+            child: Icon(FontAwesomeIcons.hackerNewsSquare),
+            opacity: Tween(begin: .0, end: 1.0).animate(
+                CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+            ),
+          );
         /*}else{
           return Container();
         }*/
